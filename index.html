@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Macro Gold Production</title>
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&f[]=general-sans@500,600,700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <style>
+    :root,[data-theme="light"]{--text-xs:clamp(.75rem,.7rem + .25vw,.875rem);--text-sm:clamp(.875rem,.8rem + .35vw,1rem);--text-base:clamp(1rem,.95rem + .25vw,1.125rem);--text-lg:clamp(1.125rem,1rem + .75vw,1.5rem);--text-xl:clamp(1.5rem,1.2rem + 1.25vw,2.25rem);--space-1:.25rem;--space-2:.5rem;--space-3:.75rem;--space-4:1rem;--space-5:1.25rem;--space-6:1.5rem;--space-8:2rem;--space-10:2.5rem;--space-12:3rem;--radius-sm:.375rem;--radius-md:.5rem;--radius-lg:.85rem;--radius-xl:1rem;--radius-full:999px;--color-bg:#f4f6f8;--color-surface:#fff;--color-surface-2:#f7f9fb;--color-surface-offset:#eef2f5;--color-border:rgba(17,23,31,.10);--color-text:#121922;--color-text-muted:#627284;--color-text-faint:#91a0af;--color-text-inverse:#f3f6f9;--color-primary:#9b7a2b;--color-success:#1f8b57;--color-warning:#b7791f;--color-error:#c1445b;--color-blue:#2b72c7;--shadow-sm:0 1px 2px rgba(18,26,36,.06);--shadow-md:0 8px 30px rgba(18,26,36,.08);--shadow-lg:0 22px 60px rgba(18,26,36,.12);--font-display:'General Sans','Inter',sans-serif;--font-body:'Satoshi','Inter',sans-serif;--transition-interactive:180ms cubic-bezier(.16,1,.3,1);--buy:#1f9d63;--sell:#cf4f66;--neutral:#7b899a;--gold:#b88a2b}
+    [data-theme="dark"]{--color-bg:#0b1015;--color-surface:#121922;--color-surface-2:#17202a;--color-surface-offset:#1d2731;--color-border:rgba(238,243,248,.08);--color-text:#edf3f9;--color-text-muted:#95a4b7;--color-text-faint:#66778d;--color-text-inverse:#0b1118;--color-primary:#d1a247;--color-success:#3fc17b;--color-warning:#f0a84f;--color-error:#ff647d;--color-blue:#56a2ef;--buy:#49d18f;--sell:#ff7086;--neutral:#8697aa;--gold:#d1a247;--shadow-sm:0 1px 2px rgba(0,0,0,.24);--shadow-md:0 8px 24px rgba(0,0,0,.28);--shadow-lg:0 20px 60px rgba(0,0,0,.38)}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;scroll-behavior:smooth}body{min-height:100dvh;line-height:1.55;font-family:var(--font-body);font-size:var(--text-base);background:radial-gradient(circle at top right,color-mix(in oklab,var(--color-primary) 14%,transparent),transparent 25%),var(--color-bg);color:var(--color-text)}button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer;border:none;background:none}a,button,input,select,textarea{transition:color var(--transition-interactive),background var(--transition-interactive),border-color var(--transition-interactive),box-shadow var(--transition-interactive),transform var(--transition-interactive)}:focus-visible{outline:2px solid var(--color-primary);outline-offset:3px;border-radius:6px}.skip-link{position:absolute;left:-9999px;top:1rem;background:var(--color-primary);color:var(--color-text-inverse);padding:.75rem 1rem;border-radius:10px;z-index:1000}.skip-link:focus{left:1rem}
+    .app{display:grid;grid-template-columns:310px 1fr;grid-template-rows:74px 1fr;height:100dvh;overflow:hidden}.sidebar{grid-row:1/-1;background:linear-gradient(180deg,color-mix(in oklab,var(--color-primary) 6%,transparent),transparent 22%),var(--color-surface);border-right:1px solid var(--color-border);padding:var(--space-5);overflow:auto}.header{grid-column:2;display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);padding:0 var(--space-6);border-bottom:1px solid var(--color-border);backdrop-filter:blur(16px);background:color-mix(in oklab,var(--color-bg) 84%,transparent)}.main{grid-column:2;overflow:auto;padding:var(--space-6);display:grid;gap:var(--space-6)}
+    .brand{display:flex;gap:var(--space-3);align-items:center;margin-bottom:var(--space-8)}.logo{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:color-mix(in oklab,var(--color-primary) 12%,var(--color-surface));border:1px solid color-mix(in oklab,var(--color-primary) 24%,var(--color-border));color:var(--color-primary)}.brand h1{font-family:var(--font-display);font-size:var(--text-lg);font-weight:700;letter-spacing:-.03em}.meta{font-size:var(--text-xs);color:var(--color-text-muted);text-transform:uppercase;letter-spacing:.12em}.small{font-size:var(--text-sm);color:var(--color-text-muted)}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-variant-numeric:tabular-nums lining-nums}
+    .nav,.side-box,.stack,.alerts,.toolbar{display:grid;gap:var(--space-3)}.nav button,.rowbox,.cfg,.doc-block{min-height:44px;width:100%;padding:.85rem 1rem;border-radius:var(--radius-lg);background:var(--color-surface-2);border:1px solid var(--color-border);display:flex;justify-content:space-between;align-items:center;text-align:left;color:var(--color-text-muted)}.nav button.active{background:color-mix(in oklab,var(--color-primary) 10%,var(--color-surface-2));border-color:color-mix(in oklab,var(--color-primary) 42%,var(--color-border));color:var(--color-text)}.header-actions,.status-row,.chips{display:flex;gap:var(--space-3);align-items:center;flex-wrap:wrap}.status-dot{width:10px;height:10px;border-radius:999px;background:var(--color-success);box-shadow:0 0 0 6px color-mix(in oklab,var(--color-success) 12%,transparent)}
+    .btn{min-height:44px;padding:.8rem 1rem;border-radius:var(--radius-lg);border:1px solid var(--color-border);background:var(--color-surface);box-shadow:var(--shadow-sm)}.btn.primary{background:color-mix(in oklab,var(--color-primary) 18%,var(--color-surface));border-color:color-mix(in oklab,var(--color-primary) 45%,var(--color-border))}.panel{background:linear-gradient(180deg,color-mix(in oklab,var(--color-text) 2%,transparent),transparent),var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-xl);box-shadow:var(--shadow-md)}.panel-inner{padding:var(--space-5)}.panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--space-4);margin-bottom:var(--space-4)}.panel-title{font-family:var(--font-display);font-size:var(--text-lg);font-weight:700;letter-spacing:-.03em}.hero-title{font-family:var(--font-display);font-size:var(--text-xl);font-weight:700;letter-spacing:-.04em;margin:.4rem 0 .5rem}.hero-copy{max-width:64ch;color:var(--color-text-muted)}
+    .hero{display:grid;grid-template-columns:1.35fr .95fr;gap:var(--space-6)}.grid-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:var(--space-4)}.grid-main{display:grid;grid-template-columns:1.25fr .95fr;gap:var(--space-6)}.signal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-3)}.score-grid{display:grid;grid-template-columns:170px 1fr;gap:var(--space-5);align-items:center}.gauge{width:170px;height:170px;border-radius:50%;position:relative;padding:13px;background:conic-gradient(var(--sell) 0 20%,color-mix(in oklab,var(--sell) 55%,var(--neutral)) 20% 40%,var(--neutral) 40% 60%,color-mix(in oklab,var(--buy) 55%,var(--neutral)) 60% 80%,var(--buy) 80% 100%)}.gauge:before{content:"";position:absolute;inset:13px;border-radius:50%;background:var(--color-bg)}.gauge-center{position:absolute;inset:0;display:grid;place-items:center;z-index:1;text-align:center}.gauge-center strong{font-size:2.4rem;line-height:1}
+    .signal-card,.kpi-card,.rule-card,.api-card{padding:var(--space-4);border-radius:var(--radius-lg);background:var(--color-surface-2);border:1px solid var(--color-border)}.value{margin-top:var(--space-2);font-size:var(--text-lg);font-weight:700;line-height:1.15;font-variant-numeric:tabular-nums lining-nums}.traffic{display:flex;align-items:center;gap:.55rem;margin-top:.75rem}.light{width:12px;height:12px;border-radius:999px;background:color-mix(in oklab,var(--neutral) 50%,var(--color-surface-offset))}.light.buy{background:var(--buy);box-shadow:0 0 0 4px color-mix(in oklab,var(--buy) 12%,transparent)}.light.sell{background:var(--sell);box-shadow:0 0 0 4px color-mix(in oklab,var(--sell) 12%,transparent)}.light.warn{background:var(--color-warning);box-shadow:0 0 0 4px color-mix(in oklab,var(--color-warning) 12%,transparent)}
+    .chip{padding:.45rem .75rem;border-radius:999px;font-size:var(--text-xs);border:1px solid var(--color-border);background:var(--color-surface-2);color:var(--color-text-muted)}.chip.buy{color:var(--buy);border-color:color-mix(in oklab,var(--buy) 30%,var(--color-border));background:color-mix(in oklab,var(--buy) 10%,var(--color-surface))}.chip.warn{color:var(--color-warning);border-color:color-mix(in oklab,var(--color-warning) 30%,var(--color-border));background:color-mix(in oklab,var(--color-warning) 10%,var(--color-surface))}.chip.sell{color:var(--sell);border-color:color-mix(in oklab,var(--sell) 30%,var(--color-border));background:color-mix(in oklab,var(--sell) 10%,var(--color-surface))}
+    .alert{display:grid;grid-template-columns:auto 1fr auto;gap:var(--space-3);align-items:flex-start;padding:var(--space-4);border-radius:var(--radius-lg);background:var(--color-surface-2);border:1px solid var(--color-border)}.sev{width:10px;min-height:48px;border-radius:999px}.sev.low{background:var(--neutral)}.sev.medium{background:var(--color-blue)}.sev.high{background:var(--color-warning)}.sev.critical{background:var(--sell)}
+    .table{width:100%;border-collapse:collapse}.table th,.table td{padding:.85rem .5rem;border-bottom:1px solid color-mix(in oklab,var(--color-text) 8%,transparent);text-align:left;font-size:var(--text-sm);vertical-align:top}.table th{color:var(--color-text-muted);font-weight:600}
+    .toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}.toolbar label{display:grid;gap:.4rem}.toolbar input,.toolbar select,.toolbar textarea{min-height:44px;padding:.75rem .9rem;background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:var(--radius-lg)}.toolbar textarea{min-height:110px;resize:vertical}
+    .api-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-4)}.codebox{padding:1rem;border-radius:14px;background:#0d131a;color:#dfe7f1;border:1px solid rgba(255,255,255,.08);overflow:auto;font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap}
+    .footer-note,.note{font-size:var(--text-xs);color:var(--color-text-faint)}.ok{color:var(--buy)}.bad{color:var(--sell)}
+    @media (max-width:1180px){.hero,.grid-main{grid-template-columns:1fr}.grid-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.api-grid{grid-template-columns:1fr}}
+    @media (max-width:860px){.app{grid-template-columns:1fr;grid-template-rows:auto auto 1fr}.sidebar{grid-row:auto;border-right:none;border-bottom:1px solid var(--color-border)}.header,.main{grid-column:auto}.score-grid{grid-template-columns:1fr}.grid-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.signal-grid,.toolbar{grid-template-columns:1fr}}
+    @media (max-width:560px){.header{padding:0 var(--space-4)}.main,.sidebar{padding:var(--space-4)}.grid-kpis{grid-template-columns:1fr}.alert{grid-template-columns:1fr}.header-actions{display:none}}
+  </style>
+</head>
+<body>
+<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M4 18L12 4L20 18" stroke="currentColor" stroke-width="1.8"/><path d="M7.5 14H16.5" stroke="currentColor" stroke-width="1.8"/><path d="M10 18H14" stroke="currentColor" stroke-width="1.8"/></svg></div>
+      <div><h1>Macro Gold Production</h1><div class="small mono">deploy-ready • stateless</div></div>
+    </div>
+    <nav class="nav">
+      <button class="active" data-scroll="overview">Overview</button>
+      <button data-scroll="connectors">Conectores reais</button>
+      <button data-scroll="alerts">Alertas</button>
+      <button data-scroll="setup">Configuração</button>
+      <button data-scroll="integration">Integração</button>
+    </nav>
+    <section class="side-box">
+      <div class="meta">Ativos monitorados</div>
+      <div class="rowbox"><span>XAUUSD</span><strong id="sb-xau" class="mono">--</strong></div>
+      <div class="rowbox"><span>DXY</span><strong id="sb-dxy" class="mono">--</strong></div>
+      <div class="rowbox"><span>US10Y</span><strong id="sb-yield" class="mono">--</strong></div>
+      <div class="rowbox"><span>BCOM</span><strong id="sb-bcom" class="mono">--</strong></div>
+      <div class="rowbox"><span>Silver</span><strong id="sb-silver" class="mono">--</strong></div>
+      <div class="rowbox"><span>Copper</span><strong id="sb-copper" class="mono">--</strong></div>
+      <div class="rowbox"><span>Platinum</span><strong id="sb-plat" class="mono">--</strong></div>
+      <div class="rowbox"><span>Fed</span><strong id="sb-fed" class="mono">--</strong></div>
+    </section>
+    <section class="side-box">
+      <div class="meta">Stack de integração</div>
+      <div class="cfg"><span>XAUUSD / Metals</span><strong id="xauProviderBadge">GoldAPI demo</strong></div>
+      <div class="cfg"><span>Macro / Yield</span><strong id="fredProviderBadge">FRED demo</strong></div>
+      <div class="cfg"><span>Modo</span><strong>Sem persistência</strong></div>
+      <div class="cfg"><span>Fallback</span><strong>Automático</strong></div>
+    </section>
+  </aside>
+
+  <header class="header">
+    <div class="status-row"><span class="status-dot"></span><div><div class="meta">Status</div><div class="small mono" id="engineStatus">Inicializando painel...</div></div></div>
+    <div class="header-actions"><button class="btn" data-theme-toggle>Tema</button><button class="btn" id="soundToggle">Som ligado</button><button class="btn primary" id="refreshNow">Sincronizar agora</button></div>
+  </header>
+
+  <main class="main" id="conteudo">
+    <section class="hero" id="overview">
+      <article class="panel">
+        <div class="panel-inner">
+          <div class="panel-head">
+            <div>
+              <div class="meta">Leitura macro live</div>
+              <h2 class="hero-title" id="headline">Aguardando leitura</h2>
+              <p class="hero-copy" id="heroReason">O painel já está preparado para receber XAUUSD e metais por API real, macro por FRED e fallback em memória sem banco de dados.</p>
+            </div>
+            <div class="chips"><span class="chip" id="regimeChip">Regime --</span><span class="chip" id="confidenceChip">Confiança --</span></div>
+          </div>
+          <div class="score-grid">
+            <div class="gauge"><div class="gauge-center mono"><div><div class="meta">Macro score</div><strong id="macroScore">--</strong><div class="small" id="macroBand">Aguardando</div></div></div></div>
+            <div class="stack">
+              <div class="signal-grid">
+                <div class="signal-card"><div class="meta">Curto prazo</div><div class="value" id="trendShort">--</div><div class="traffic"><span class="light" id="lightShort"></span><span class="small" id="shortReason">EMA / momentum</span></div></div>
+                <div class="signal-card"><div class="meta">Médio prazo</div><div class="value" id="trendMedium">--</div><div class="traffic"><span class="light" id="lightMedium"></span><span class="small" id="mediumReason">ADX / breadth</span></div></div>
+                <div class="signal-card"><div class="meta">Longo prazo</div><div class="value" id="trendLong">--</div><div class="traffic"><span class="light" id="lightLong"></span><span class="small" id="longReason">Regime macro</span></div></div>
+              </div>
+              <div class="signal-grid">
+                <div class="signal-card"><div class="meta">Momentum</div><div class="value mono" id="momentumBox">--</div><div class="traffic"><span class="light" id="lightMomentum"></span><span class="small" id="momentumReason">Aceleração</span></div></div>
+                <div class="signal-card"><div class="meta">Volatilidade</div><div class="value mono" id="volatilityBox">--</div><div class="traffic"><span class="light" id="lightVol"></span><span class="small" id="volReason">ATR relativo</span></div></div>
+                <div class="signal-card"><div class="meta">Risco reversão</div><div class="value mono" id="reversalRisk">--</div><div class="traffic"><span class="light" id="lightReversal"></span><span class="small" id="reversalReason">Divergências</span></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <aside class="panel">
+        <div class="panel-inner">
+          <div class="panel-head"><div><div class="meta">Estado dos conectores</div><div class="panel-title">Supervisão</div></div><span class="chip warn" id="latencyChip">latência --</span></div>
+          <div class="alerts" id="connectorState">
+            <div class="alert"><span class="sev medium"></span><div><strong>XAU/metals provider</strong><div class="small" id="xauConnectorText">Aguardando.</div></div><div class="mono" id="xauConnectorTime">--</div></div>
+            <div class="alert"><span class="sev medium"></span><div><strong>Macro provider</strong><div class="small" id="fredConnectorText">Aguardando.</div></div><div class="mono" id="fredConnectorTime">--</div></div>
+            <div class="alert"><span class="sev low"></span><div><strong>Modo operacional</strong><div class="small">Estado em memória, sem gravação persistente.</div></div><div class="mono">stateless</div></div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="grid-kpis">
+      <article class="panel kpi-card"><div class="meta">XAUUSD</div><div class="value mono" id="xauPrice">--</div><div class="small" id="xauDelta">--</div><div class="note">Preço e intraday</div></article>
+      <article class="panel kpi-card"><div class="meta">Corr DXY</div><div class="value mono" id="corrDxy">--</div><div class="small" id="corrDxyTag">--</div><div class="note">Relação com ouro</div></article>
+      <article class="panel kpi-card"><div class="meta">Corr US10Y</div><div class="value mono" id="corrYield">--</div><div class="small" id="corrYieldTag">--</div><div class="note">Yield versus metal</div></article>
+      <article class="panel kpi-card"><div class="meta">Macro breadth</div><div class="value mono" id="macroBreadth">--</div><div class="small" id="breadthTag">--</div><div class="note">Ativos em consenso</div></article>
+      <article class="panel kpi-card"><div class="meta">Classificação</div><div class="value mono" id="classTag">--</div><div class="small" id="classExplain">--</div><div class="note">Saída do motor</div></article>
+    </section>
+
+    <section class="grid-main">
+      <div class="stack">
+        <article class="panel"><div class="panel-inner"><div class="panel-head"><div><div class="meta">Radar macro</div><div class="panel-title">Contribuição cruzada</div></div></div><div style="min-height:320px"><canvas id="radarChart"></canvas></div></div></article>
+        <article class="panel" id="connectors"><div class="panel-inner"><div class="panel-head"><div><div class="meta">Provedores sugeridos</div><div class="panel-title">Mapa de integração real</div></div></div><table class="table"><thead><tr><th>Ativo/fonte</th><th>Endpoint sugerido</th><th>Observação</th><th>Uso no painel</th></tr></thead><tbody><tr><td>XAUUSD</td><td class="mono">GoldAPI / Metals API / EODHD / Twelve Data</td><td>spot ouro em JSON</td><td>preço principal</td></tr><tr><td>Silver / Platinum</td><td class="mono">GoldAPI / Metals API</td><td>metais preciosos correlacionados</td><td>confirmação</td></tr><tr><td>Copper / DXY / BCOM</td><td class="mono">FMP / EODHD / provider institucional</td><td>índices e commodities</td><td>breadth macro</td></tr><tr><td>US10Y / Fed</td><td class="mono">FRED DGS10 / FEDFUNDS</td><td>macro oficial com API key</td><td>yield e juros</td></tr></tbody></table></div></article>
+        <article class="panel"><div class="panel-inner"><div class="panel-head"><div><div class="meta">Matriz macro</div><div class="panel-title">Confirmação por ativo</div></div></div><table class="table"><thead><tr><th>Ativo</th><th>Preço</th><th>Delta</th><th>Força</th><th>Leitura para ouro</th></tr></thead><tbody id="assetRows"></tbody></table></div></article>
+      </div>
+      <div class="stack">
+        <article class="panel"><div class="panel-inner"><div class="panel-head"><div><div class="meta">Heatmap</div><div class="panel-title">Contribuição no score</div></div><span class="chip buy" id="scoreExplainTag">Explainability</span></div><div style="min-height:320px"><canvas id="barChart"></canvas></div></div></article>
+        <article class="panel" id="alerts"><div class="panel-inner"><div class="panel-head"><div><div class="meta">Alertas emitidos</div><div class="panel-title">Feed ao vivo</div></div><span class="chip" id="alertCount">0 ativos</span></div><div class="alerts" id="alertFeed"></div></div></article>
+        <article class="panel" id="setup"><div class="panel-inner"><div class="panel-head"><div><div class="meta">Configuração real</div><div class="panel-title">Chaves e endpoints</div></div></div><div class="toolbar"><label><span class="meta">XAU / metals provider</span><select id="xauProvider"><option selected>GoldAPI.io</option><option>Metals-API</option><option>EODHD</option><option>Twelve Data</option><option>Custom REST</option></select></label><label><span class="meta">API key XAU/metals</span><input id="xauApiKey" placeholder="Sua chave"></label><label><span class="meta">Base URL custom</span><input id="customBaseUrl" placeholder="https://..."></label><label><span class="meta">FRED API key</span><input id="fredKey" placeholder="Sua chave FRED"></label><label><span class="meta">Refresh live (ms)</span><select id="liveRefresh"><option>5000</option><option selected>10000</option><option>15000</option><option>30000</option></select></label><label><span class="meta">Macro refresh (ms)</span><select id="macroRefresh"><option>30000</option><option selected>60000</option><option>120000</option></select></label></div><div class="toolbar" style="margin-top:1rem"><label style="grid-column:1/-1"><span class="meta">Template custom JSON mapping</span><textarea id="customMap" placeholder='{"xau":"price","silver":"silver","platinum":"platinum","copper":"copper","dxy":"dxy","bcom":"bcom"}'></textarea></label><button class="btn primary" id="applyConnectors">Aplicar conectores</button><button class="btn" id="loadDemo">Voltar ao demo</button></div><p class="small" style="margin-top:1rem">Sem banco de dados: a sessão começa a analisar a partir do momento em que os feeds respondem. Se o provider falhar ou a chave estiver ausente, o painel entra automaticamente em fallback demo sem interromper o motor analítico.</p></div></article>
+      </div>
+    </section>
+
+    <section class="panel" id="integration">
+      <div class="panel-inner">
+        <div class="panel-head"><div><div class="meta">Integração prática</div><div class="panel-title">Templates de chamadas reais</div></div><span class="chip warn">Deploy estático</span></div>
+        <div class="api-grid">
+          <div class="api-card"><div class="meta">GoldAPI / Metals</div><div class="codebox" id="goldTemplate"></div></div>
+          <div class="api-card"><div class="meta">FRED DGS10 / FEDFUNDS</div><div class="codebox" id="fredTemplate"></div></div>
+          <div class="api-card"><div class="meta">Custom provider</div><div class="codebox" id="customTemplate"></div></div>
+        </div>
+        <p class="footer-note" style="margin-top:1rem">Use este arquivo em VPS, Nginx, Cloudflare Pages ou qualquer hosting estático. As integrações usam fetch em tempo real e o motor permanece stateless.</p>
+      </div>
+    </section>
+  </main>
+</div>
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+  const html=document.documentElement;
+  let theme=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+  html.setAttribute('data-theme',theme);
+  const severityOrder={Baixo:1,Médio:2,Alto:3,Crítico:4,low:1,medium:2,high:3,critical:4};
+  const fmt=(n,d=2)=>new Intl.NumberFormat('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d}).format(n);
+  const pct=n=>`${n>=0?'+':''}${fmt(n,2)}%`;
+  const bp=n=>`${n>=0?'+':''}${fmt(n,1)}bp`;
+  const now=()=>new Date().toLocaleTimeString('pt-BR',{hour12:false});
+  let soundEnabled=true,tick=0,marketTimer=null,macroTimer=null,alertId=0;
+  const maxPoints=40;
+  const app={provider:'GoldAPI.io',xauApiKey:'goldapi-cca4b104bcd32367752dd0318da79ee6-io',fredKey:'9c23f1e44f44094de3cbd76fee2b2179',customBaseUrl:'',liveRefresh:10000,macroRefresh:60000,customMap:{xau:'price',silver:'silver',platinum:'platinum',copper:'copper',dxy:'dxy',bcom:'bcom'},alerts:[],sourceState:{xau:'demo fallback',fred:'demo fallback'},assets:{XAUUSD:{price:3428.6,prevClose:3384.0,history:[]},DXY:{price:101.78,prevClose:102.41,history:[]},US10Y:{price:4.181,prevClose:4.259,history:[]},BCOM:{price:109.4,prevClose:108.0,history:[]},Silver:{price:35.10,prevClose:34.31,history:[]},Copper:{price:4.70,prevClose:4.58,history:[]},Platinum:{price:1011.8,prevClose:1005.7,history:[]},Fed:{price:4.625,prevClose:4.75,history:[]}}};
+  const rand=(min,max)=>Math.random()*(max-min)+min;
+  const pushHistory=(a,v)=>{a.history.push(v);if(a.history.length>maxPoints)a.history.shift()};
+  const sma=(arr,len)=>{const s=arr.length<len?arr:arr.slice(-len);return s.reduce((x,y)=>x+y,0)/Math.max(s.length,1)};
+  const std=(arr,len)=>{const s=arr.length<len?arr:arr.slice(-len);const m=sma(s,s.length);return Math.sqrt(s.reduce((x,y)=>x+Math.pow(y-m,2),0)/Math.max(s.length,1))};
+  const corr=(a,b)=>{const n=Math.min(a.length,b.length,20);if(n<5)return 0;const x=a.slice(-n),y=b.slice(-n),mx=sma(x,n),my=sma(y,n);let num=0,dx=0,dy=0;for(let i=0;i<n;i++){const vx=x[i]-mx,vy=y[i]-my;num+=vx*vy;dx+=vx*vx;dy+=vy*vy}return dx&&dy?num/Math.sqrt(dx*dy):0};
+  const deltaPct=a=>((a.price-a.prevClose)/a.prevClose)*100;
+  const shortMomentum=a=>a.history.length<5?0:((a.history.at(-1)-a.history.at(-5))/a.history.at(-5))*100;
+  const zScore=a=>{const sd=std(a.history,18);return sd?((a.price-sma(a.history,18))/sd):0};
+  const band=s=>s<=20?'Forte venda':s<=40?'Pressão vendedora':s<60?'Neutro':s<80?'Pressão compradora':'Forte compra';
+  const sevPt=l=>({baixo:'low',medio:'medium',alto:'high',critico:'critical'})[l.toLowerCase().normalize('NFD').replace(/[^a-z]/g,'')]||'low';
+  const setLight=(id,type)=>{const el=document.getElementById(id);el.className='light';if(type)el.classList.add(type)};
+  const row=(name,price,delta,strength,read)=>`<tr><td>${name}</td><td class="mono">${fmt(price,name==='US10Y'?3:2)}</td><td class="mono ${delta>=0?'ok':'bad'}">${pct(delta)}</td><td>${strength}</td><td>${read}</td></tr>`;
+  const directStrength=v=>v>1?'Forte':v>.3?'Moderada':v<-1?'Negativa forte':v<-.3?'Negativa moderada':'Neutra';
+  const inverseStrength=v=>v<-.3?'Forte pró-ouro':v>.3?'Contra ouro':'Neutra';
+  const scoreText=v=>v>=80?'Forte compra':v>=60?'Compra':v<=20?'Forte venda':v<=40?'Venda':'Neutro';
+
+  function simulateMacroTick(){tick+=1;const p=Math.sin(tick/5.4),shock=Math.random()>.95?rand(-1,1):0,a=app.assets;a.DXY.price+=rand(-.08,.07)-p*.014+shock*.07;a.US10Y.price+=rand(-.011,.011)-p*.002+shock*.004;a.BCOM.price+=rand(-.22,.29)+p*.05-shock*.08;a.Silver.price+=rand(-.20,.22)+p*.06-shock*.08;a.Copper.price+=rand(-.03,.04)+p*.011-shock*.01;a.Platinum.price+=rand(-4.2,4.8)+p*1.1-shock*1.1;a.Fed.price+=rand(-.003,.003)-p*.0008}
+  function simulateXauTick(){const a=app.assets,impulse=(-shortMomentum(a.DXY)*.42)+(-shortMomentum(a.US10Y)*.36)+(shortMomentum(a.Silver)*.22)+(shortMomentum(a.Copper)*.14)+(shortMomentum(a.BCOM)*.18);a.XAUUSD.price+=rand(-4.2,4.4)+impulse*1.22+Math.sin(tick/4.8)*1.7}
+  function updateDemo(){simulateMacroTick();simulateXauTick();Object.values(app.assets).forEach(v=>pushHistory(v,v.price))}
+
+  async function fetchJson(url,options={}){const res=await fetch(url,options);if(!res.ok)throw new Error(`HTTP ${res.status}`);return res.json()}
+
+  async function refreshMarketReal(){
+    if(!app.xauApiKey&&app.provider!=='Custom REST'){app.sourceState.xau='demo fallback';return}
+    try{
+      if(app.provider==='GoldAPI.io'){
+        const xau=await fetchJson('https://www.goldapi.io/api/XAU/USD',{headers:{'x-access-token':app.xauApiKey,'Content-Type':'application/json'}});
+        const silver=await fetchJson('https://www.goldapi.io/api/XAG/USD',{headers:{'x-access-token':app.xauApiKey,'Content-Type':'application/json'}});
+        const plat=await fetchJson('https://www.goldapi.io/api/XPT/USD',{headers:{'x-access-token':app.xauApiKey,'Content-Type':'application/json'}});
+        if(Number.isFinite(Number(xau.price)))app.assets.XAUUSD.price=Number(xau.price);
+        if(Number.isFinite(Number(silver.price)))app.assets.Silver.price=Number(silver.price);
+        if(Number.isFinite(Number(plat.price)))app.assets.Platinum.price=Number(plat.price);
+        app.sourceState.xau='GoldAPI live';
+      } else if(app.provider==='Metals-API'){
+        const data=await fetchJson(`https://metals-api.com/api/latest?access_key=${encodeURIComponent(app.xauApiKey)}&base=USD&symbols=XAU,XAG,XPT`);
+        const r=data?.rates||{};
+        if(Number.isFinite(Number(r.XAU)))app.assets.XAUUSD.price=1/Number(r.XAU);
+        if(Number.isFinite(Number(r.XAG)))app.assets.Silver.price=1/Number(r.XAG);
+        if(Number.isFinite(Number(r.XPT)))app.assets.Platinum.price=1/Number(r.XPT);
+        app.sourceState.xau='Metals-API live';
+      } else if(app.provider==='EODHD'){
+        const xau=await fetchJson(`https://eodhd.com/api/real-time/XAUUSD.FOREX?api_token=${encodeURIComponent(app.xauApiKey)}&fmt=json`);
+        if(Number.isFinite(Number(xau.close)))app.assets.XAUUSD.price=Number(xau.close);
+        app.sourceState.xau='EODHD live';
+      } else if(app.provider==='Twelve Data'){
+        const xau=await fetchJson(`https://api.twelvedata.com/price?symbol=XAU/USD&apikey=${encodeURIComponent(app.xauApiKey)}`);
+        if(Number.isFinite(Number(xau.price)))app.assets.XAUUSD.price=Number(xau.price);
+        app.sourceState.xau='Twelve Data live';
+      } else if(app.provider==='Custom REST'&&app.customBaseUrl){
+        const data=await fetchJson(app.customBaseUrl,{headers:app.xauApiKey?{'Authorization':`Bearer ${app.xauApiKey}`}:{}});
+        const m=app.customMap;
+        if(Number.isFinite(Number(data?.[m.xau])))app.assets.XAUUSD.price=Number(data[m.xau]);
+        if(Number.isFinite(Number(data?.[m.silver])))app.assets.Silver.price=Number(data[m.silver]);
+        if(Number.isFinite(Number(data?.[m.platinum])))app.assets.Platinum.price=Number(data[m.platinum]);
+        if(Number.isFinite(Number(data?.[m.copper])))app.assets.Copper.price=Number(data[m.copper]);
+        if(Number.isFinite(Number(data?.[m.dxy])))app.assets.DXY.price=Number(data[m.dxy]);
+        if(Number.isFinite(Number(data?.[m.bcom])))app.assets.BCOM.price=Number(data[m.bcom]);
+        app.sourceState.xau='Custom REST live';
+      }
+      Object.values(app.assets).forEach(v=>pushHistory(v,v.price));
+    }catch(e){app.sourceState.xau='demo fallback'}
+  }
+
+  async function refreshMacroReal(){
+    if(!app.fredKey){app.sourceState.fred='demo fallback';return}
+    try{
+      const urls=[`https://api.stlouisfed.org/fred/series/observations?series_id=DGS10&api_key=${encodeURIComponent(app.fredKey)}&file_type=json&sort_order=desc&limit=1`,`https://api.stlouisfed.org/fred/series/observations?series_id=FEDFUNDS&api_key=${encodeURIComponent(app.fredKey)}&file_type=json&sort_order=desc&limit=1`];
+      const [dgs10,fed]=await Promise.all(urls.map(u=>fetchJson(u)));
+      const yv=Number(dgs10?.observations?.[0]?.value),fv=Number(fed?.observations?.[0]?.value);
+      if(!Number.isNaN(yv))app.assets.US10Y.price=yv;
+      if(!Number.isNaN(fv))app.assets.Fed.price=fv;
+      app.sourceState.fred='FRED live';
+    }catch(e){app.sourceState.fred='demo fallback'}
+  }
+
+  function computeState(){const a=app.assets,dxyDelta=deltaPct(a.DXY),yDelta=(a.US10Y.price-a.US10Y.prevClose)*100,bcomDelta=deltaPct(a.BCOM),silverDelta=deltaPct(a.Silver),copperDelta=deltaPct(a.Copper),platDelta=deltaPct(a.Platinum),xauDelta=deltaPct(a.XAUUSD),fedDelta=((a.Fed.prevClose-a.Fed.price)/a.Fed.prevClose)*100;const components={DXY:Math.max(0,Math.min(100,50+(-dxyDelta*22))),US10Y:Math.max(0,Math.min(100,50+(-yDelta*3.5))),BCOM:Math.max(0,Math.min(100,50+(bcomDelta*16))),Silver:Math.max(0,Math.min(100,50+(silverDelta*18))),Copper:Math.max(0,Math.min(100,50+(copperDelta*20))),Platinum:Math.max(0,Math.min(100,50+(platDelta*10))),Fed:Math.max(0,Math.min(100,50+(fedDelta*18)))};const score=Math.round((components.DXY*.22)+(components.US10Y*.20)+(components.BCOM*.14)+(components.Silver*.16)+(components.Copper*.11)+(components.Platinum*.07)+(components.Fed*.10));const xauMom=shortMomentum(a.XAUUSD),xauZ=zScore(a.XAUUSD),atr=std(a.XAUUSD.history,18),volatilityPct=a.XAUUSD.price?(atr/a.XAUUSD.price)*100*10:0,cDxy=corr(a.XAUUSD.history,a.DXY.history),cYield=corr(a.XAUUSD.history,a.US10Y.history);let breadth=0;if(dxyDelta<0)breadth++;if(yDelta<0)breadth++;if(bcomDelta>0)breadth++;if(silverDelta>0)breadth++;if(copperDelta>0)breadth++;if(platDelta>0)breadth++;if(fedDelta>0)breadth++;const trendShort=xauMom>.18?'Alta':xauMom<-.18?'Baixa':'Lateral',trendMedium=score>=60?'Alta':score<=40?'Baixa':'Mista',trendLong=breadth>=5?'Estrutural alta':breadth<=2?'Estrutural baixa':'Indefinida';const againstTrendUp=trendMedium==='Baixa'&&xauMom>.15,againstTrendDown=trendMedium==='Alta'&&xauMom<-.15;let classification='neutral';if(score>=60&&xauMom>.15&&breadth>=4)classification='bullish continuation';else if(score<=40&&xauMom<-.15&&breadth<=3)classification='bearish continuation';else if(againstTrendUp&&xauZ>1.1)classification='bullish reversal';else if(againstTrendDown&&xauZ<-1.1)classification='bearish reversal';const reversalRisk=Math.round(Math.max(0,Math.min(100,45+(Math.abs(xauZ)*14)-(breadth*4)+((cDxy>-.2)?10:0)+((cYield>-.15)?8:0)))),confidence=Math.round(Math.max(50,Math.min(96,55+Math.abs(score-50)*.75+breadth*2.4)));return{score,components,xauDelta,dxyDelta,yDelta,bcomDelta,silverDelta,copperDelta,platDelta,fedDelta,cDxy,cYield,breadth,trendShort,trendMedium,trendLong,classification,reversalRisk,confidence,xauMom,xauZ,volatilityPct}}
+  function buildAlerts(state){const arr=[];if(state.dxyDelta<-.35)arr.push({severity:'Alto',title:'DXY em queda confirmando suporte ao ouro',reason:`DXY ${pct(state.dxyDelta)} amplia pressão favorável ao XAUUSD.`,bias:'buy'});if(state.yDelta<-4.5)arr.push({severity:'Alto',title:'US10Y em queda reforça tese compradora',reason:`Yield ${bp(state.yDelta)} reduz pressão sobre metal sem cupom.`,bias:'buy'});if(state.silverDelta>1.1&&state.copperDelta>.8)arr.push({severity:'Médio',title:'Prata e cobre confirmam expansão de commodities',reason:'Metais correlacionados acompanham ouro e reduzem risco de falso rompimento.',bias:'buy'});if(state.volatilityPct>1.25)arr.push({severity:'Médio',title:'Volatilidade intraday em expansão',reason:`ATR proxy ${fmt(state.volatilityPct,2)}. Ajuste risco e execução.`,bias:'warn'});if(state.reversalRisk>66)arr.push({severity:'Crítico',title:'Movimento forte contra a estrutura → possível reversão',reason:`Risco de reversão ${state.reversalRisk}/100 com divergência macro crescente.`,bias:'sell'});if(state.classification==='bullish continuation')arr.push({severity:'Alto',title:'Confirmação de força compradora no ouro',reason:'Tendência e breadth seguem alinhadas; motor classifica continuação bullish.',bias:'buy'});if(state.classification==='bearish continuation')arr.push({severity:'Alto',title:'Pressão vendedora confirmada no ouro',reason:'Dólar, yield e breadth pressionam continuidade baixista.',bias:'sell'});if(state.classification==='bullish reversal')arr.push({severity:'Crítico',title:'Possível reversão bullish no ouro',reason:'Movimento forte contra tendência predominante com aceleração de fluxo.',bias:'buy'});if(state.classification==='bearish reversal')arr.push({severity:'Crítico',title:'Possível reversão bearish no ouro',reason:'Perda abrupta de sustentação com mudança de momentum.',bias:'sell'});return arr.slice(0,5)}
+  function maybeNotify(alert){const level=severityOrder[alert.severity];if(level<2)return;if(app.alerts[0]&&app.alerts[0].title===alert.title)return;if(soundEnabled){try{const ctx=new(window.AudioContext||window.webkitAudioContext)(),osc=ctx.createOscillator(),gain=ctx.createGain();osc.type='sine';osc.frequency.value=alert.severity==='Crítico'?760:540;gain.gain.value=.025;osc.connect(gain);gain.connect(ctx.destination);osc.start();osc.stop(ctx.currentTime+.12)}catch(e){}}if('Notification'in window&&Notification.permission==='granted'){try{new Notification(alert.title,{body:alert.reason})}catch(e){}}}
+  function addAlert(alert){if(app.alerts[0]&&app.alerts[0].title===alert.title)return;alertId+=1;app.alerts.unshift({...alert,id:alertId,time:now()});app.alerts=app.alerts.slice(0,8)}
+  const suggestion=alert=>alert.bias==='buy'?'priorizar compras apenas com gatilho técnico limpo':alert.bias==='sell'?'reduzir agressividade compradora e monitorar exaustão':'esperar nova confirmação';
+  function updateConnectorUI(){document.getElementById('xauProviderBadge').textContent=app.sourceState.xau;document.getElementById('fredProviderBadge').textContent=app.sourceState.fred;document.getElementById('xauConnectorText').textContent=app.sourceState.xau==='demo fallback'?'Provider real indisponível ou sem chave; demo ativo.':'Provider de metais/ouro online.';document.getElementById('fredConnectorText').textContent=app.sourceState.fred==='demo fallback'?'FRED sem chave válida; macro em demo.':'FRED online com última observação carregada.';document.getElementById('xauConnectorTime').textContent=now();document.getElementById('fredConnectorTime').textContent=now();document.getElementById('goldTemplate').textContent=`// GoldAPI / Metals provider\nfetch('https://www.goldapi.io/api/XAU/USD', {\n  headers: { 'x-access-token': 'SUA_CHAVE' }\n}).then(r => r.json())\n  .then(data => console.log(data.price));`;document.getElementById('fredTemplate').textContent=`// FRED DGS10 e FEDFUNDS\nfetch('https://api.stlouisfed.org/fred/series/observations?series_id=DGS10&api_key=SUA_CHAVE&file_type=json&limit=1&sort_order=desc')\n  .then(r => r.json())\n  .then(data => console.log(data.observations[0].value));`;document.getElementById('customTemplate').textContent=`// Custom REST JSON\n// Exemplo esperado:\n{\n  "price": 3425.22,\n  "silver": 35.11,\n  "platinum": 1013.2,\n  "copper": 4.68,\n  "dxy": 101.74,\n  "bcom": 109.8\n}`}
+  function render(state){const headlineMap={'bullish continuation':'Confirmação de força compradora no ouro','bearish continuation':'Confirmação de pressão vendedora no ouro','bullish reversal':'Alerta de possível reversão altista no ouro','bearish reversal':'Alerta de possível reversão baixista no ouro','neutral':'Leitura neutra com confirmação macro parcial'},reasonMap={'bullish continuation':'DXY e US10Y enfraquecem enquanto commodities e metais correlacionados sustentam a expansão do ouro.','bearish continuation':'Dólar, yields e breadth pressionam o ouro em sincronia, reforçando continuidade da venda.','bullish reversal':'O ouro acelera contra a tendência dominante e começa a atrair confirmação cruzada.','bearish reversal':'Ouro perde tração mesmo sob fundo estrutural mais favorável, sugerindo exaustão do impulso.','neutral':'Os ativos macro não estão suficientemente alinhados; o painel recomenda cautela até novo consenso.'};document.getElementById('headline').textContent=headlineMap[state.classification];document.getElementById('heroReason').textContent=reasonMap[state.classification];document.getElementById('regimeChip').textContent=state.classification;document.getElementById('confidenceChip').textContent=`Confiança ${state.confidence}%`;document.getElementById('macroScore').textContent=state.score;document.getElementById('macroBand').textContent=band(state.score);document.getElementById('latencyChip').textContent=`latência ~ ${app.liveRefresh/1000}s`;document.getElementById('engineStatus').textContent=`XAU ${app.sourceState.xau} • Macro ${app.sourceState.fred} • ${now()} • sessão em memória`;document.getElementById('scoreExplainTag').textContent=`Breadth ${state.breadth}/7`;document.getElementById('trendShort').textContent=state.trendShort;document.getElementById('trendMedium').textContent=state.trendMedium;document.getElementById('trendLong').textContent=state.trendLong;document.getElementById('shortReason').textContent=`Mom ${fmt(state.xauMom,2)}%`;document.getElementById('mediumReason').textContent=`Score ${state.score}`;document.getElementById('longReason').textContent=`Breadth ${state.breadth}/7`;document.getElementById('momentumBox').textContent=`${state.xauZ>=0?'+':''}${fmt(state.xauZ,2)}σ`;document.getElementById('momentumReason').textContent=state.xauZ>1.2?'Aceleração forte':state.xauZ<-1.2?'Pressão negativa forte':'Normalizado';document.getElementById('volatilityBox').textContent=`${fmt(state.volatilityPct,2)}%`;document.getElementById('volReason').textContent=state.volatilityPct>1.2?'Expansão relevante':'Dentro do regime';document.getElementById('reversalRisk').textContent=`${state.reversalRisk}/100`;document.getElementById('reversalReason').textContent=state.reversalRisk>66?'Atenção máxima':state.reversalRisk>45?'Monitorar divergências':'Controlado';setLight('lightShort',state.trendShort==='Alta'?'buy':state.trendShort==='Baixa'?'sell':'');setLight('lightMedium',state.trendMedium==='Alta'?'buy':state.trendMedium==='Baixa'?'sell':'');setLight('lightLong',state.trendLong.includes('alta')?'buy':state.trendLong.includes('baixa')?'sell':'');setLight('lightMomentum',Math.abs(state.xauZ)>1?'warn':'');setLight('lightVol',state.volatilityPct>1.2?'warn':'');setLight('lightReversal',state.reversalRisk>66?'sell':state.reversalRisk>45?'warn':'');document.getElementById('xauPrice').textContent=fmt(app.assets.XAUUSD.price,2);document.getElementById('xauDelta').textContent=`${pct(state.xauDelta)} • intraday ${fmt(app.assets.XAUUSD.price-app.assets.XAUUSD.prevClose,2)} pts`;document.getElementById('corrDxy').textContent=fmt(state.cDxy,2);document.getElementById('corrDxyTag').textContent=state.cDxy<-.45?'Inversa forte':state.cDxy<-.2?'Inversa moderada':'Fraca / divergente';document.getElementById('corrYield').textContent=fmt(state.cYield,2);document.getElementById('corrYieldTag').textContent=state.cYield<-.35?'Inversa relevante':state.cYield<-.15?'Inversa leve':'Desalinhada';document.getElementById('macroBreadth').textContent=`${state.breadth} / 7`;document.getElementById('breadthTag').textContent=state.breadth>=5?'Confirmação ampla':state.breadth>=3?'Confirmação parcial':'Baixa convergência';document.getElementById('classTag').textContent=state.classification;document.getElementById('classExplain').textContent=`Score ${state.score} • risco ${state.reversalRisk}`;document.getElementById('sb-xau').textContent=fmt(app.assets.XAUUSD.price,2);document.getElementById('sb-dxy').textContent=fmt(app.assets.DXY.price,2);document.getElementById('sb-yield').textContent=fmt(app.assets.US10Y.price,3);document.getElementById('sb-bcom').textContent=fmt(app.assets.BCOM.price,2);document.getElementById('sb-silver').textContent=fmt(app.assets.Silver.price,2);document.getElementById('sb-copper').textContent=fmt(app.assets.Copper.price,2);document.getElementById('sb-plat').textContent=fmt(app.assets.Platinum.price,1);document.getElementById('sb-fed').textContent=state.fedDelta>0?'Dovish':'Hawkish';updateCharts(state);renderTable(state);const alerts=buildAlerts(state);if(alerts.length)maybeNotify(alerts[0]);alerts.forEach(addAlert);renderAlerts(alerts);updateConnectorUI()}
+  function renderAlerts(top){document.getElementById('alertFeed').innerHTML=(app.alerts.length?app.alerts:top).map(alert=>`<div class="alert"><span class="sev ${sevPt(alert.severity)}"></span><div><strong>${alert.title}</strong><div class="small">${alert.reason}</div><div class="note">Sugestão: ${suggestion(alert)}</div></div><div class="mono">${alert.time||now()}</div></div>`).join('');document.getElementById('alertCount').textContent=`${app.alerts.length} ativos`}
+  function renderTable(state){document.getElementById('assetRows').innerHTML=[row('XAUUSD',app.assets.XAUUSD.price,state.xauDelta,scoreText(state.score),state.classification),row('DXY',app.assets.DXY.price,state.dxyDelta,inverseStrength(state.dxyDelta),state.dxyDelta<0?'Confirma compra em ouro':'Pressiona ouro'),row('US10Y',app.assets.US10Y.price,state.yDelta/100,inverseStrength(state.yDelta/100),state.yDelta<0?'Apoio ao ouro':'Pressão baixista em ouro'),row('BCOM',app.assets.BCOM.price,state.bcomDelta,directStrength(state.bcomDelta),state.bcomDelta>0?'Expansão pró-metais':'Menor suporte macro'),row('Silver',app.assets.Silver.price,state.silverDelta,directStrength(state.silverDelta),state.silverDelta>0?'Confirma ouro':'Divergência leve'),row('Copper',app.assets.Copper.price,state.copperDelta,directStrength(state.copperDelta),state.copperDelta>0?'Confirma expansão de commodities':'Sem expansão clara'),row('Platinum',app.assets.Platinum.price,state.platDelta,directStrength(state.platDelta),state.platDelta>0?'Apoio complementar':'Confirmação fraca')].join('')}
+
+  const radarChart=new Chart(document.getElementById('radarChart'),{type:'radar',data:{labels:['DXY','US10Y','BCOM','Silver','Copper','Platinum','Fed'],datasets:[{label:'Contribuição',data:[50,50,50,50,50,50,50],borderColor:'#b88a2b',backgroundColor:'rgba(184,138,43,.12)',pointBackgroundColor:'#d1a247',borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#95a4b7'}}},scales:{r:{min:0,max:100,ticks:{color:'#95a4b7',backdropColor:'transparent'},grid:{color:'rgba(255,255,255,.08)'},angleLines:{color:'rgba(255,255,255,.08)'},pointLabels:{color:'#edf3f9'}}}}});
+  const barChart=new Chart(document.getElementById('barChart'),{type:'bar',data:{labels:['DXY','US10Y','BCOM','Silver','Copper','Platinum','Fed'],datasets:[{label:'Peso atual',data:[0,0,0,0,0,0,0],backgroundColor:['#49d18f','#49d18f','#56a2ef','#49d18f','#49d18f','#f0a84f','#d1a247'],borderRadius:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#95a4b7'},grid:{display:false}},y:{beginAtZero:true,ticks:{color:'#95a4b7'},grid:{color:'rgba(255,255,255,.08)'}}}}});
+  function updateCharts(state){radarChart.data.datasets[0].data=[state.components.DXY,state.components.US10Y,state.components.BCOM,state.components.Silver,state.components.Copper,state.components.Platinum,state.components.Fed];radarChart.update();barChart.data.datasets[0].data=[Math.round((state.components.DXY-50)*.44+18),Math.round((state.components.US10Y-50)*.40+16),Math.round((state.components.BCOM-50)*.28+11),Math.round((state.components.Silver-50)*.32+14),Math.round((state.components.Copper-50)*.22+9),Math.round((state.components.Platinum-50)*.12+5),Math.round((state.components.Fed-50)*.18+6)].map(v=>Math.max(0,v));barChart.update()}
+
+  async function fullCycle(){updateDemo();await refreshMarketReal();await refreshMacroReal();render(computeState())}
+  function restartLoop(){clearInterval(marketTimer);clearInterval(macroTimer);marketTimer=setInterval(async()=>{updateDemo();await refreshMarketReal();render(computeState())},app.liveRefresh);macroTimer=setInterval(async()=>{await refreshMacroReal();render(computeState())},app.macroRefresh)}
+
+  document.querySelector('[data-theme-toggle]').addEventListener('click',()=>{theme=theme==='dark'?'light':'dark';html.setAttribute('data-theme',theme)});
+  document.getElementById('soundToggle').addEventListener('click',()=>{soundEnabled=!soundEnabled;document.getElementById('soundToggle').textContent=soundEnabled?'Som ligado':'Som desligado'});
+  document.getElementById('refreshNow').addEventListener('click',fullCycle);
+  document.getElementById('applyConnectors').addEventListener('click',async()=>{app.provider=document.getElementById('xauProvider').value;app.xauApiKey=document.getElementById('xauApiKey').value.trim();app.fredKey=document.getElementById('fredKey').value.trim();app.customBaseUrl=document.getElementById('customBaseUrl').value.trim();app.liveRefresh=Number(document.getElementById('liveRefresh').value);app.macroRefresh=Number(document.getElementById('macroRefresh').value);try{app.customMap=JSON.parse(document.getElementById('customMap').value||'{}')}catch(e){}await fullCycle();restartLoop()});
+  document.getElementById('loadDemo').addEventListener('click',()=>{app.provider='GoldAPI.io';app.xauApiKey='';app.fredKey='';app.customBaseUrl='';app.sourceState={xau:'demo fallback',fred:'demo fallback'};restartLoop();render(computeState())});
+  document.querySelectorAll('[data-scroll]').forEach(btn=>btn.addEventListener('click',()=>{document.getElementById(btn.dataset.scroll)?.scrollIntoView({behavior:'smooth',block:'start'});document.querySelectorAll('.nav button').forEach(n=>n.classList.toggle('active',n===btn))}));
+  if('Notification'in window&&Notification.permission==='default'){Notification.requestPermission().catch(()=>{})}
+  for(let i=0;i<24;i++)updateDemo();
+  fullCycle();restartLoop();
+});
+</script>
+</body>
+</html>
